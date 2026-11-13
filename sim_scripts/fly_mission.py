@@ -5,6 +5,12 @@ m = mavutil.mavlink_connection('udp:127.0.0.1:14552')
 m.wait_heartbeat()
 print("Connected")
 
+print("Waiting for GPS fix...")
+while True:
+    g = m.recv_match(type='GPS_RAW_INT', blocking=True, timeout=5)
+    if g and g.fix_type >= 3:
+        break
+print("GPS ready")
 def set_mode(name):
     m.set_mode(m.mode_mapping()[name])
     time.sleep(1)
